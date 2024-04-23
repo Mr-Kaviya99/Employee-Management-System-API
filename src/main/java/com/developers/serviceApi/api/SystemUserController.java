@@ -19,12 +19,20 @@ public class SystemUserController {
     private final SystemUserService systemUserService;
     private final Logger LOGGER = LoggerFactory.getLogger(SystemUserController.class);
 
-    @GetMapping(path = {"/login"},params = {"userName", "password"})
-    public ResponseEntity<StandardResponse> getAll(
+    /**
+     * This api provides login function
+     *
+     * @param userName
+     * @param password
+     * @return ResponseEntity<StandardResponse>
+     * @throws SQLException
+     */
+    @GetMapping(path = {"/login"}, params = {"userName", "password"})
+    public ResponseEntity<StandardResponse> login(
             @RequestParam String userName,
             @RequestParam String password
     ) throws SQLException {
-        LOGGER.info("Login request received");
+        LOGGER.info("SystemUserController->login method accessed");
         return new ResponseEntity<>(
                 new StandardResponse(200, "logged in",
                         systemUserService.login(userName, password)),

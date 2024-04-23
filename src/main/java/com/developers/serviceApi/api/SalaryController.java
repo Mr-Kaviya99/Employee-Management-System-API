@@ -23,11 +23,19 @@ public class SalaryController {
     private final SalaryService salaryService;
     private final Logger LOGGER = LoggerFactory.getLogger(SalaryController.class);
 
+    /**
+     * This api provides create salaries function
+     *
+     * @param dto
+     * @param userTypeId
+     * @return ResponseEntity<StandardResponse>
+     * @throws SQLException
+     */
     @PostMapping(path = {"/create"}, params = {"userTypeId"})
     public ResponseEntity<StandardResponse> create(
             @Valid @RequestBody RequestSalaryDTO dto,
             @RequestParam String userTypeId) throws SQLException {
-        LOGGER.info("Resource creation request received");
+        LOGGER.info("SalaryController->create method accessed");
         CommonResponseDTO responseData = salaryService.create(dto, userTypeId);
         return new ResponseEntity<>(
                 new StandardResponse(
@@ -37,11 +45,18 @@ public class SalaryController {
         );
     }
 
+    /**
+     * This api provides all data of salary
+     *
+     * @param month
+     * @return ResponseEntity<StandardResponse>
+     * @throws SQLException
+     */
     @GetMapping(path = {"/get-all"}, params = {"month"})
     public ResponseEntity<StandardResponse> getAll(
             @RequestParam String month
     ) throws SQLException {
-        LOGGER.info("Request received for get all ");
+        LOGGER.info("SalaryController->getAll method accessed");
         return new ResponseEntity<>(
                 new StandardResponse(200, "All Records Fetched",
                         salaryService.getAll(month)),
