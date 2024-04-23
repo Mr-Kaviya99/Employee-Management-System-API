@@ -17,12 +17,16 @@ import com.developers.serviceApi.util.Generator;
 import com.developers.serviceApi.util.mapper.BranchMapper;
 import com.developers.serviceApi.util.mapper.EmployeeMapper;
 import com.developers.serviceApi.util.mapper.UserTypeMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.vladmihalcea.hibernate.type.util.LogUtils.LOGGER;
+
+@RequiredArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final Generator generator;
@@ -33,18 +37,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final UserTypeRepo userTypeRepo;
     private final UserTypeMapper userTypeMapper;
 
-    public EmployeeServiceImpl(Generator generator, EmployeeRepo employeeRepo, EmployeeMapper employeeMapper, BranchRepo branchRepo, BranchMapper branchMapper, UserTypeRepo userTypeRepo, UserTypeMapper userTypeMapper) {
-        this.generator = generator;
-        this.employeeRepo = employeeRepo;
-        this.employeeMapper = employeeMapper;
-        this.branchRepo = branchRepo;
-        this.branchMapper = branchMapper;
-        this.userTypeRepo = userTypeRepo;
-        this.userTypeMapper = userTypeMapper;
-    }
-
+    /**
+     * This method provides create employee function
+     *
+     * @param dto
+     * @param branchId
+     * @param userTypeId
+     * @return CommonResponseDTO
+     */
     @Override
     public CommonResponseDTO create(RequestEmployeeDTO dto, String branchId, String userTypeId) {
+
+        LOGGER.info("EmployeeService->Create method accessed");
+
         Optional<Branch> branch = branchRepo.findById(branchId);
         if (branch.isEmpty()) {
             throw new EntryNotFoundException("Branch Not Found");
@@ -77,8 +82,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new CommonResponseDTO(201, " saved!", true, new ArrayList<>());
     }
 
+    /**
+     * This method provides get all employee function
+     *
+     * @param employeeAvailability
+     * @param employmentState
+     * @param branchId
+     * @param userTypeId
+     * @return List<ResponseEmployeeDTO>
+     */
     @Override
     public List<ResponseEmployeeDTO> getAll(String employeeAvailability, String employmentState, String branchId, String userTypeId) {
+
+        LOGGER.info("EmployeeService->getAll method accessed");
+
         List<Employee> list;
         ArrayList<ResponseEmployeeDTO> arrayList = new ArrayList<>();
 
@@ -164,8 +181,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         return arrayList;
     }
 
+    /**
+     * This method provides get employee by id function
+     *
+     * @param employeeId
+     * @return ResponseEmployeeDTO
+     */
     @Override
     public ResponseEmployeeDTO getById(String employeeId) {
+
+        LOGGER.info("EmployeeService->getById method accessed");
+
         Optional<Employee> employee = employeeRepo.findById(employeeId);
         if (employee.isEmpty()) {
             throw new EntryNotFoundException("Employee Not Found");
@@ -183,8 +209,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
     }
 
+    /**
+     * This method provides change employee active status function
+     *
+     * @param state
+     * @param employeeId
+     * @return CommonResponseDTO
+     */
     @Override
     public CommonResponseDTO changeState(boolean state, String employeeId) {
+
+        LOGGER.info("EmployeeService->changeState method accessed");
+
         Optional<Employee> employee = employeeRepo.findById(employeeId);
         if (employee.isEmpty()) {
             throw new EntryNotFoundException("Employee Not Found");
@@ -194,8 +230,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new CommonResponseDTO(200, "changed", employeeId, new ArrayList<>());
     }
 
+    /**
+     * This method provides change employee employment state function
+     *
+     * @param employmentState
+     * @param employeeId
+     * @return CommonResponseDTO
+     */
     @Override
     public CommonResponseDTO changeEmploymentState(boolean employmentState, String employeeId) {
+
+        LOGGER.info("EmployeeService->changeEmploymentState method accessed");
+
         Optional<Employee> employee = employeeRepo.findById(employeeId);
         if (employee.isEmpty()) {
             throw new EntryNotFoundException("Employee Not Found");
@@ -205,11 +251,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new CommonResponseDTO(200, "changed", employeeId, new ArrayList<>());
     }
 
+    /**
+     * This method provides get employee count function
+     *
+     * @return Object
+     */
     @Override
-     public Object getEmployeeCount() {
-         long count = employeeRepo.countEmployee();
-         return new CountDTO(count);
-     }
+    public Object getEmployeeCount() {
+
+        LOGGER.info("EmployeeService->getEmployeeCount method accessed");
+
+        long count = employeeRepo.countEmployee();
+        return new CountDTO(count);
+    }
 
 
 }

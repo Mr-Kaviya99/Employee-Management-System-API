@@ -16,6 +16,7 @@ import com.developers.serviceApi.service.SalaryService;
 import com.developers.serviceApi.util.Generator;
 import com.developers.serviceApi.util.mapper.EmployeeMapper;
 import com.developers.serviceApi.util.mapper.SalaryMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.vladmihalcea.hibernate.type.util.LogUtils.LOGGER;
+
+@RequiredArgsConstructor
 @Service
 public class SalaryServiceImpl implements SalaryService {
     private final Generator generator;
@@ -32,43 +36,42 @@ public class SalaryServiceImpl implements SalaryService {
     private final EmployeeMapper employeeMapper;
     private final UserTypeRepo userTypeRepo;
 
-    public SalaryServiceImpl(Generator generator, SalaryRepo salaryRepo, SalaryMapper salaryMapper,
-                             EmployeeRepo employeeRepo, EmployeeMapper employeeMapper,
-                             UserTypeRepo userTypeRepo) {
-        this.generator = generator;
-        this.salaryRepo = salaryRepo;
-        this.salaryMapper = salaryMapper;
-        this.employeeRepo = employeeRepo;
-        this.employeeMapper = employeeMapper;
-        this.userTypeRepo = userTypeRepo;
-    }
-
+    /**
+     * This method provides create salaries function
+     *
+     * @param dto
+     * @param userTypeId
+     * @return CommonResponseDTO
+     */
     @Override
     @Transactional
     public CommonResponseDTO create(RequestSalaryDTO dto, String userTypeId) {
 
-        Optional<UserType> userType= userTypeRepo.findById(userTypeId);
-        if(userType.isEmpty()){
+        LOGGER.info("SalaryService->create method accessed");
+
+
+        Optional<UserType> userType = userTypeRepo.findById(userTypeId);
+        if (userType.isEmpty()) {
             throw new EntryNotFoundException("UserType Not Found");
         }
 
         List<Employee> employees = employeeRepo.findByUserTypeId(userTypeId);
-        for(Employee u : employees){
+        for (Employee u : employees) {
 
             List<Salary> salary = salaryRepo.findByEmployeeId(u.getEmployeeId());
-            if(!salary.isEmpty()){
-                for (Salary s: salary){
-                    if(s.getMonth().equals(dto.getMonth())){
+            if (!salary.isEmpty()) {
+                for (Salary s : salary) {
+                    if (s.getMonth().equals(dto.getMonth())) {
                         throw new EntryDuplicateException("Already Added For This Month");
                     }
                 }
             }
             //--------------------------------------------------------------------------------------------------------------
-            String prefix="SAPI-S-";
-            String propertyId = generator.generateNewId(prefix,salaryRepo.findLastId(prefix,prefix.length()+1));
+            String prefix = "SAPI-S-";
+            String propertyId = generator.generateNewId(prefix, salaryRepo.findLastId(prefix, prefix.length() + 1));
             //---------------------------------------------------------------------
 
-            SalaryDTO salaryDTO= new SalaryDTO(
+            SalaryDTO salaryDTO = new SalaryDTO(
                     propertyId,
                     dto.getMonth(),
                     dto.getAmount(),
@@ -78,16 +81,25 @@ public class SalaryServiceImpl implements SalaryService {
             salaryRepo.save(salaryMapper.toSalary(salaryDTO));
         }
 
-        return new CommonResponseDTO(200,"Saved !!",userTypeId,new ArrayList<>());
+        return new CommonResponseDTO(200, "Saved !!", userTypeId, new ArrayList<>());
 
     }
 
+    /**
+     * This method provides get all salary function
+     *
+     * @param month
+     * @return List<ResponseSalaryDTO>
+     */
     @Override
     public List<ResponseSalaryDTO> getAll(String month) {
+
+        LOGGER.info("SalaryService->getAll method accessed");
+
         List<Salary> list = salaryRepo.findBySearchText(month);
         ArrayList<ResponseSalaryDTO> arrayList = new ArrayList<>();
 
-        for(Salary u :list){
+        for (Salary u : list) {
             arrayList.add(new ResponseSalaryDTO(
                     u.getSalaryId(),
                     u.getEmployee().getEmployeeId(),
@@ -97,8 +109,6 @@ public class SalaryServiceImpl implements SalaryService {
                     u.getEmployee().getUserType().getUserTypeName(),
                     u.getEmployee().getBranch().getBranchName(),
                     u.isPaidStatus()
-
-
 
 
             ));

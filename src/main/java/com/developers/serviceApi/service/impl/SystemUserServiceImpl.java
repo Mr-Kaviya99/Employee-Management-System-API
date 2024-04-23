@@ -6,35 +6,49 @@ import com.developers.serviceApi.exception.EntryNotFoundException;
 import com.developers.serviceApi.repo.SystemUserRepo;
 import com.developers.serviceApi.service.SystemUserService;
 import com.developers.serviceApi.util.mapper.SystemUserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.vladmihalcea.hibernate.type.util.LogUtils.LOGGER;
+
+@RequiredArgsConstructor
 @Service
 public class SystemUserServiceImpl implements SystemUserService {
 
     private final SystemUserRepo systemUserRepo;
     private final SystemUserMapper systemUserMapper;
 
-    public SystemUserServiceImpl(SystemUserRepo systemUserRepo, SystemUserMapper systemUserMapper) {
-        this.systemUserRepo = systemUserRepo;
-
-        this.systemUserMapper = systemUserMapper;
-    }
-
+    /**
+     * This method provides login function
+     *
+     * @param userName
+     * @param password
+     * @return boolean
+     */
     @Override
     public boolean login(String userName, String password) {
-        Optional<SystemUser> user= systemUserRepo.findByUserName(userName);
-        if(user.isEmpty()){
+
+        LOGGER.info("SystemUserServiceImpl->login method accessed");
+
+        Optional<SystemUser> user = systemUserRepo.findByUserName(userName);
+        if (user.isEmpty()) {
             throw new EntryNotFoundException("User Not Found!!!!");
         }
         return user.get().getPassword().equals(password);
     }
 
+    /**
+     * This method provides initialize system user function
+     */
     @Override
     public void initializeUser() {
+
+        LOGGER.info("SystemUserServiceImpl->initializeUser method accessed");
+
         SystemUserDTO systemUserDTO = new SystemUserDTO(
-            "SAPI-SU-1",
+                "SAPI-SU-1",
                 "admin",
                 "admin@gmail.com",
                 "admin"
