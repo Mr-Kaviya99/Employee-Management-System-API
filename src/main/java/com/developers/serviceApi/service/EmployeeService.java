@@ -1,7 +1,6 @@
 package com.developers.serviceApi.service;
 
 import com.developers.serviceApi.dto.requestDTO.RequestEmployeeDTO;
-import com.developers.serviceApi.dto.requestDTO.RequestUserTypeDTO;
 import com.developers.serviceApi.dto.responseDTO.CommonResponseDTO;
 import com.developers.serviceApi.dto.responseDTO.ResponseEmployeeDTO;
 
@@ -11,6 +10,7 @@ public interface EmployeeService {
 
     /**
      * This method provides create employee function
+     *
      * @param dto
      * @param branchId
      * @param userTypeId
@@ -20,16 +20,18 @@ public interface EmployeeService {
 
     /**
      * This method provides get all employee function
+     *
      * @param employeeAvailability
      * @param employmentState
      * @param branchId
      * @param userTypeId
      * @return List<ResponseEmployeeDTO>
      */
-    List<ResponseEmployeeDTO> getAll(String employeeAvailability, String employmentState,String branchId,String userTypeId);
+    List<ResponseEmployeeDTO> getAll(String employeeAvailability, String employmentState, String branchId, String userTypeId);
 
     /**
      * This method provides get employee by id function
+     *
      * @param employeeId
      * @return ResponseEmployeeDTO
      */
@@ -37,14 +39,16 @@ public interface EmployeeService {
 
     /**
      * This method provides change employee active status function
+     *
      * @param state
      * @param employeeId
      * @return CommonResponseDTO
      */
-    CommonResponseDTO changeState(boolean state,String employeeId);
+    CommonResponseDTO changeState(boolean state, String employeeId);
 
     /**
      * This method provides change employee employment state function
+     *
      * @param employmentState
      * @param employeeId
      * @return CommonResponseDTO
@@ -53,7 +57,8 @@ public interface EmployeeService {
 
     /**
      * This method provides get employee count function
+     *
      * @return Object
      */
-     Object getEmployeeCount();
+    Object getEmployeeCount();
 }

@@ -3,6 +3,7 @@ package com.developers.serviceApi.service;
 public interface SystemUserService {
     /**
      * This method provides login function
+     *
      * @param userName
      * @param password
      * @return boolean

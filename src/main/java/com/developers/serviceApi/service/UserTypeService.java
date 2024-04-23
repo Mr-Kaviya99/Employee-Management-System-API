@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserTypeService {
     /**
      * This method provides create user type function
+     *
      * @param dto
      * @return CommonResponseDTO
      */
@@ -16,12 +17,14 @@ public interface UserTypeService {
 
     /**
      * This method provides get all user type function
+     *
      * @return List<ResponseUserTypeDTO>s
      */
     List<ResponseUserTypeDTO> getAll();
 
     /**
      * This method provides delete user type function
+     *
      * @param userTypeId
      * @return
      */
@@ -29,6 +32,7 @@ public interface UserTypeService {
 
     /**
      * This method provides get user type count function
+     *
      * @return Object
      */
     Object getUserTypeCount();
